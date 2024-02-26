@@ -1,12 +1,13 @@
-name: Windows workflow
+name: Test workflow
 on:
+  push:
   workflow_dispatch:
 
 jobs:
   brr:
     strategy:
       matrix:
-        node-version: [18, 20, 21]
+        node-version: [18, 20]
         os: [windows-latest, ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
@@ -29,4 +30,4 @@ jobs:
           readFile(path1).then(console.log.bind(console), console.error.bind(console));
           readFile(path2).then(console.log.bind(console), console.error.bind(console));
         EOF
-    - run: node --input-type=module script.mjs
+    - run: node script.mjs
