@@ -4,11 +4,14 @@ on:
 
 jobs:
   brr:
+    strategy:
+      matrix:
+        node-version: [18, 20, 21]
     runs-on: windows-latest
     steps:
     - name: Use Node.js latest
       uses: actions/setup-node@v4
       with:
-        node-version: latest
+        node-version: ${{ matrix.node-version }}
     - run: echo 'hi' >file.txt
     - run: node --input-type=module -e 'import {readFile} from "node:fs/promises"; const url=new URL("file.txt", import.meta.url); console.log(url, url.pathname); readFile(url.pathname).then(console.log.bind(console), console.error.bind(console)); readFile(url.pathname.slice(1)).then(console.log.bind(console), console.error.bind(console));'
