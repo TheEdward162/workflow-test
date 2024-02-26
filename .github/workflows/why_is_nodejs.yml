@@ -1,0 +1,32 @@
+name: Windows workflow
+on:
+  workflow_dispatch:
+
+jobs:
+  brr:
+    strategy:
+      matrix:
+        node-version: [18, 20, 21]
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Use Node.js latest
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: echo 'hi' >'file name.txt'
+    - run: |
+        cat <<EOF >script.mjs
+          import {readFile} from "node:fs/promises";
+          import {resolve} from "node:path";
+          import {fileURLToPath} from "node:url";
+          const url = new URL("file name.txt", import.meta.url);
+          const resolved = resolve(url.pathname);
+          const path1 = fileURLToPath("file://" + resolved);
+          const path2 = fileURLToPath("file://" + url.pathname);
+          console.log(url, url.pathname, resolved, path1, path2);
+
+          readFile(path1).then(console.log.bind(console), console.error.bind(console));
+          readFile(path2).then(console.log.bind(console), console.error.bind(console));
+        EOF
+    - run: node --input-type=module script.mjs
