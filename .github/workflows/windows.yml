@@ -14,4 +14,4 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: echo 'hi' >file.txt
-    - run: node --input-type=module -e 'import {readFile} from "node:fs/promises"; import {resolve} from "node:path"; import {} from "node:url"; const url=new URL("file.txt", import.meta.url); console.log(url, url.pathname, resolve(url.pathname), fileURLToPath("file://" + resolve(url.pathname))); readFile(fileURLToPath("file://" + resolve(url.pathname))).then(console.log.bind(console), console.error.bind(console));'
+    - run: node --input-type=module -e 'import {readFile} from "node:fs/promises"; import {resolve} from "node:path"; import {fileURLToPath} from "node:url"; const url=new URL("file.txt", import.meta.url); console.log(url, url.pathname, resolve(url.pathname), fileURLToPath("file://" + resolve(url.pathname))); readFile(fileURLToPath("file://" + resolve(url.pathname))).then(console.log.bind(console), console.error.bind(console));'
