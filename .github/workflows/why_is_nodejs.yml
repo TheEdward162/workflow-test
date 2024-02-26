@@ -25,8 +25,8 @@ jobs:
 
           function unfuck(url) {
             let resolved = url.pathname;
-            if (url.protocol !== 'file:') {
-              // in webpack we aren't even getting a valid URL
+            if (resolved.charAt(0) !== '/') {
+              // in webpack we aren't even getting a valid URL and the path is relative
               resolved = resolve(resolved)
             }
 
