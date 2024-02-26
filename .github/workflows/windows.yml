@@ -1,0 +1,13 @@
+name: Windows workflow
+on:
+  workflow_dispatch:
+
+jobs:
+  brr:
+    runs-on: windows-latest
+    steps:
+    - name: Use Node.js latest
+      uses: actions/setup-node@v4
+      with:
+        node-version: latest
+    - run: node --input-type=module -e 'console.log(new URL("../foo.wasm", import.meta.url), new URL("../foo.wasm", import.meta.url).pathname)'
