@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  brr:
+  js_ecoshitstem:
     strategy:
       matrix:
         node-version: [18, 20]
@@ -16,18 +16,25 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: echo 'hi' >'file name.txt'
-    - run: |
+    - shell: bash
+      run: |
         cat <<EOF >script.mjs
           import {readFile} from "node:fs/promises";
           import {resolve} from "node:path";
           import {fileURLToPath} from "node:url";
-          const url = new URL("file name.txt", import.meta.url);
-          const resolved = resolve(url.pathname);
-          const path1 = fileURLToPath("file://" + resolved);
-          const path2 = fileURLToPath("file://" + url.pathname);
-          console.log(url, url.pathname, resolved, path1, path2);
 
-          readFile(path1).then(console.log.bind(console), console.error.bind(console));
-          readFile(path2).then(console.log.bind(console), console.error.bind(console));
+          function wtf(url) {
+            const resolved = resolve(url.pathname);
+            const path1 = fileURLToPath("file://" + resolved);
+            const path2 = fileURLToPath("file://" + url.pathname);
+
+            console.log(url, url.pathname, resolved, path1, path2);
+
+            readFile(path1).then(console.log.bind(console), console.error.bind(console));
+            readFile(path2).then(console.log.bind(console), console.error.bind(console));
+          }
+
+          wtf(new URL("file name.txt", import.meta.url)); // this is what unbundled code looks like
+          wtf({ pathname: "file name.txt" }); // this is what bundling with nextjs will give us
         EOF
     - run: node script.mjs
