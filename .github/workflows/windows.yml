@@ -10,4 +10,5 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: latest
-    - run: node --input-type=module -e 'console.log(new URL("../foo.wasm", import.meta.url), new URL("../foo.wasm", import.meta.url).pathname)'
+    - run: echo 'hi' >file.txt
+    - run: node --input-type=module -e 'import {readFile} from "node:fs/promises"; const url=new URL("file.txt", import.meta.url); console.log(url, url.pathname); readFile(url.pathname).then(console.log.bind(console), console.error.bind(console));'
