@@ -23,18 +23,20 @@ jobs:
           import {resolve} from "node:path";
           import {fileURLToPath} from "node:url";
 
-          function wtf(url) {
-            const resolved = resolve(url.pathname);
-            const path1 = fileURLToPath("file://" + resolved);
-            const path2 = fileURLToPath("file://" + url.pathname);
+          function unfuck(url) {
+            let resolved = url.pathname;
+            if (url.protocol !== 'file:') {
+              // in webpack we aren't even getting a valid URL
+              resolved = resolve(resolved)
+            }
 
-            console.log(url, url.pathname, resolved, path1, path2);
+            const path = fileURLToPath("file://" + resolved);
+            console.log(url, resolved, path);
 
-            readFile(path1).then(console.log.bind(console), console.error.bind(console));
-            readFile(path2).then(console.log.bind(console), console.error.bind(console));
+            readFile(path).then(console.log.bind(console), console.error.bind(console));
           }
 
-          wtf(new URL("file name.txt", import.meta.url)); // this is what unbundled code looks like
-          wtf({ pathname: "file name.txt" }); // this is what bundling with nextjs will give us
+          unfuck(new URL("file name.txt", import.meta.url)); // this is what unbundled code looks like
+          unfuck({ pathname: "file name.txt" }); // this is what bundling with nextjs will give us
         EOF
     - run: node script.mjs
